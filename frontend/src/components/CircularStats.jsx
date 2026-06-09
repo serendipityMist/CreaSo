@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
+const MotionCircle = motion.circle;
+
 const stats = [
   { label: "Hours of Support", value: 1500, percent: 85, color: "#F97316" },
   { label: "Projects", value: 500, percent: 65, color: "#FB923C" },
@@ -19,11 +21,13 @@ export default function CircularStats() {
   });
 
   return (
+    <>
+    <section className="w-full py-4 px-4 md:px-8 lg:px-10">
+    <h1 className="text-gray-500 text-lg md:text-xl font-medium mt-2">Result of Trust</h1>
     <div
       ref={ref}
-      className="flex items-center justify-center gap-16 py-32 bg-white"
+      className="flex items-center justify-center gap-10 py-10 bg-white"
     >
-      {/* SVG GRAPH */}
       <div className="relative w-65 h-65">
         <svg viewBox="0 0 260 260" className="w-full h-full -rotate-90">
           {stats.map((stat, index) => {
@@ -32,7 +36,7 @@ export default function CircularStats() {
               (stat.percent / 100) * CIRCUMFERENCE;
 
             return (
-              <motion.circle
+              <MotionCircle
                 key={index}
                 cx="130"
                 cy="130"
@@ -85,5 +89,7 @@ export default function CircularStats() {
         ))}
       </div>
     </div>
+    </section>
+    </>
   );
 }

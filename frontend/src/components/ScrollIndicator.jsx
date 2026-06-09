@@ -29,14 +29,9 @@ const ScrollIndicator = () => {
       const trail = dot.cloneNode(true);
       trail.style.pointerEvents = "none";
       trail.style.position = "absolute";
-
       wrapper.appendChild(trail);
 
-      gsap.set(trail, {
-        y,
-        opacity: 0.45,
-        scale: 1,
-      });
+      gsap.set(trail, { y, opacity: 0.45, scale: 1 });
 
       gsap.to(trail, {
         opacity: 0,
@@ -50,13 +45,27 @@ const ScrollIndicator = () => {
     const st = ScrollTrigger.create({
       trigger: document.documentElement,
       start: 0,
-      end: "max",
-      scrub: 0.6, // 👈 smoother interpolation
+      end: () => {
+        // Try <footer> tag first, then common class/id fallbacks
+        const footer =
+          document.querySelector("footer") ||
+          document.querySelector("[data-footer]") ||
+          document.querySelector(".footer") ||
+          document.querySelector("#footer");
+
+        if (footer) {
+          // offsetTop = absolute distance from document top to footer top
+          return footer.offsetTop;
+        }
+
+        // Last resort: stop 200px before the very bottom
+        return ScrollTrigger.maxScroll(document.documentElement) - 200;
+      },
+      scrub: 0.6,
       onUpdate: (self) => {
         const travel = line.offsetHeight - dot.offsetHeight;
         const targetY = self.progress * travel;
 
-        // smooth interpolation
         gsap.to(dot, {
           y: targetY,
           duration: 0.2,
@@ -82,16 +91,10 @@ const ScrollIndicator = () => {
       ref={wrapperRef}
       className="fixed left-8 top-1/2 -translate-y-1/2 z-60 pointer-events-none"
     >
-      <div
-        ref={lineRef}
-        className="relative h-[60vh]"
-      >
-        
+      <div ref={lineRef} className="relative h-[60vh]">
         <div
           ref={dotRef}
-          className="absolute top-0 -left-3.5 w-2 h-2 rounded-full
-          bg-yellow-500 
-          "
+          className="absolute top-0 -left-3.5 w-2 h-2 rounded-full bg-yellow-500"
         >
           <div className="absolute inset-0 rounded-full blur-md bg-orange-400 opacity-60" />
         </div>
